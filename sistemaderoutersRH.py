@@ -3,7 +3,51 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import milp, LinearConstraint, Bounds
 
-st.set_page_config(page_title="Optimización MILP", layout="wide")
+# =========================================================
+# CONFIGURACIÓN DE PÁGINA
+# =========================================================
+
+st.set_page_config(
+    page_title="Optimización de Infraestructura de Routers",
+    layout="wide"
+)
+
+# =========================================================
+# ESTILO CSS - FONDO CELESTE
+# =========================================================
+
+st.markdown("""
+<style>
+.stApp {
+    background-color: #cfefff;
+}
+
+h1, h2, h3 {
+    color: #003366;
+}
+
+[data-testid="stDataFrame"] {
+    background-color: white;
+}
+
+div.stButton > button {
+    background-color: #007acc;
+    color: white;
+    border-radius: 10px;
+    height: 3em;
+    width: 100%;
+    font-size: 18px;
+}
+
+div.stButton > button:hover {
+    background-color: #005f99;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# =========================================================
+# TÍTULO
+# =========================================================
 
 st.title("Optimización de Infraestructura de Routers")
 
@@ -15,25 +59,47 @@ Modelo de optimización entera para planificación de infraestructura tecnológi
 # VARIABLES
 # =========================================================
 
-variables = ["x1", "x2", "x3", "x4"]
+variables = [
+    "Routers tipo1",
+    "Routers tipo2",
+    "Routers tipo3",
+    "Routers tipo4"
+]
 
 # =========================================================
 # FUNCIÓN OBJETIVO
 # =========================================================
 
-st.header("Función Objetivo")
+st.header("Maximizar Beneficio Total")
 
-st.write("Maximizar beneficio total:")
+st.write("""
+Ingrese la cantidad de usuarios asociada a cada tipo de router.
+""")
 
 col1, col2, col3, col4 = st.columns(4)
 
-c1 = col1.number_input("Coeficiente x1", value=20)
-c2 = col2.number_input("Coeficiente x2", value=50)
-c3 = col3.number_input("Coeficiente x3", value=90)
-c4 = col4.number_input("Coeficiente x4", value=150)
+u1 = col1.number_input(
+    "Cantidad de usuarios - Router tipo1",
+    value=20
+)
+
+u2 = col2.number_input(
+    "Cantidad de usuarios - Router tipo2",
+    value=50
+)
+
+u3 = col3.number_input(
+    "Cantidad de usuarios - Router tipo3",
+    value=90
+)
+
+u4 = col4.number_input(
+    "Cantidad de usuarios - Router tipo4",
+    value=150
+)
 
 # Negativos porque scipy minimiza
-c = [-c1, -c2, -c3, -c4]
+c = [-u1, -u2, -u3, -u4]
 
 # =========================================================
 # RESTRICCIONES
@@ -51,7 +117,10 @@ restricciones = [
     "Dependencia Mínima"
 ]
 
-# MATRIZ INICIAL
+# =========================================================
+# MATRIZ DE RESTRICCIONES
+# =========================================================
+
 A_inicial = pd.DataFrame(
     [
         [6, 12, 25, 40],
@@ -75,7 +144,7 @@ A_df = st.data_editor(
 )
 
 # =========================================================
-# LIMITES INFERIORES Y SUPERIORES
+# LIMITES
 # =========================================================
 
 st.subheader("Límites de Restricciones")
@@ -107,18 +176,20 @@ integrality = []
 cols = st.columns(4)
 
 for i, var in enumerate(variables):
+
     val = cols[i].selectbox(
         f"{var}",
         options=[0, 1],
         index=1
     )
+
     integrality.append(val)
 
 # =========================================================
 # RESOLVER
 # =========================================================
 
-if st.button("Resolver Modelo"):
+if st.button("Resolver Modelo de Optimización"):
 
     try:
 
@@ -150,16 +221,16 @@ if st.button("Resolver Modelo"):
             st.success("Solución óptima encontrada")
 
             st.metric(
-                "Valor Óptimo",
+                "Beneficio Máximo",
                 round(-res.fun, 2)
             )
 
             resultado_df = pd.DataFrame({
-                "Variable": variables,
-                "Valor Óptimo": np.round(res.x, 2)
+                "Tipo de Router": variables,
+                "Cantidad Óptima": np.round(res.x, 2)
             })
 
-            st.subheader("Variables Óptimas")
+            st.subheader("Cantidad Óptima de Routers")
 
             st.dataframe(
                 resultado_df,
