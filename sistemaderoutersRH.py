@@ -13,56 +13,73 @@ st.set_page_config(
 )
 
 # =========================================================
-# ESTILO CSS - FONDO CELESTE (AHORA EN LOOK RETRO-SYNTH SIN BLANCO)
+# ESTILO CSS - ESTILO VAPORWAVE / RETRO-SYNTH (SIN BLANCO)
 # =========================================================
 
 st.markdown("""
 <style>
-/* Fondo de la app en morado profundo aterciopelado */
+/* Fondo profundo de la app en azul medianoche/morado */
 .stApp {
     background-color: #1a103c;
 }
 
-/* Títulos y subtítulos con los colores solicitados originales pero estilizados */
+/* Títulos con gradiente de color Retro-Fucsia a Amarillo Eléctrico */
 h1 {
-    color: #ff00ff !important; /* Fucsia neón */
-    font-family: 'Arial Black', sans-serif;
+    background: linear-gradient(90deg, #ff007f 0%, #ff00ff 50%, #ffea00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Impact', 'Arial Black', sans-serif;
     font-weight: bold !important;
-    text-shadow: 0px 0px 10px rgba(255, 0, 255, 0.5);
+    font-size: 3rem !important;
+    letter-spacing: 1px;
 }
 
-h2, h3 {
-    color: #ffea00 !important; /* Amarillo eléctrico */
-    font-family: 'Arial Black', sans-serif;
+h2 {
+    color: #ff00ff !important;
+    font-size: 1.6rem !important;
+    font-weight: bold !important;
+    border-bottom: 2px dashed #ffea00;
+    padding-bottom: 5px;
 }
 
-p, span, label {
-    color: #00ffff !important; /* Texto en cian neón */
+h3, p, span, label {
+    color: #00ffff !important;
     font-weight: 500;
 }
 
-/* Modificación de dataframes para remover el fondo blanco */
-div[data-testid="stDataEditor"], div[data-testid="stDataFrame"] {
-    background-color: #24144b !important;
+/* Contenedores con fondo morado medio y bordes cian neón */
+div[data-testid="stVerticalBlock"] > div {
+    background-color: #24144b;
+    border-radius: 16px;
+    border: 2px solid #00ffff;
+    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.2);
+    padding: 20px;
 }
 
-/* Botón estilizado retro-synth */
+/* Modificación de data editors y selects para que no usen fondo blanco */
+div[data-testid="stDataEditor"] {
+    background-color: #1a103c !important;
+}
+
+/* Botón de acción ultra-llamativo en gradiente degradado */
 div.stButton > button {
     background: linear-gradient(45deg, #ff007f 0%, #7000ff 100%) !important;
     color: #ffea00 !important;
-    border-radius: 10px;
-    height: 3em;
+    border-radius: 0px !important; /* Estilo retro rectangular */
+    border: 3px solid #ffea00 !important;
+    height: 3.5em !important;
     width: 100%;
-    font-size: 18px;
-    font-weight: bold;
-    border: 2px solid #ffea00 !important;
-    box-shadow: 4px 4px 0px #00ffff;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 5px 5px 0px #00ffff;
     transition: all 0.2s ease;
 }
 
 div.stButton > button:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px #00ffff;
+    box-shadow: 7px 7px 0px #00ffff;
     color: #ffffff !important;
 }
 </style>
@@ -90,86 +107,115 @@ variables = [
 ]
 
 # =========================================================
-# FUNCIÓN OBJETIVO
+# DISTRIBUCIÓN HORIZONTAL COMPACTA (PANEL SUPERIOR DE CONFIGURACIÓN)
 # =========================================================
 
-st.header("Maximizar Beneficio Total")
+col_izq, col_der = st.columns([1, 1.2])
 
-st.write("""
-Ingrese la cantidad de usuarios asociada a cada tipo de router.
-""")
+with col_izq:
+    # =========================================================
+    # FUNCIÓN OBJETIVO
+    # =========================================================
+    st.header("Maximizar Beneficio Total")
 
-col1, col2, col3, col4 = st.columns(4)
+    st.write("""
+    Ingrese la cantidad de usuarios asociada a cada tipo de router.
+    """)
 
-u1 = col1.number_input(
-    "Cantidad de usuarios - Router tipo1",
-    value=20
-)
+    col1, col2, col3, col4 = st.columns(4)
 
-u2 = col2.number_input(
-    "Cantidad de usuarios - Router tipo2",
-    value=50
-)
+    u1 = col1.number_input(
+        "Cantidad de usuarios - Router tipo1",
+        value=20
+    )
 
-u3 = col3.number_input(
-    "Cantidad de usuarios - Router tipo3",
-    value=90
-)
+    u2 = col2.number_input(
+        "Cantidad de usuarios - Router tipo2",
+        value=50
+    )
 
-u4 = col4.number_input(
-    "Cantidad de usuarios - Router tipo4",
-    value=150
-)
+    u3 = col3.number_input(
+        "Cantidad de usuarios - Router tipo3",
+        value=90
+    )
 
-# Negativos porque scipy minimiza
-c = [-u1, -u2, -u3, -u4]
+    u4 = col4.number_input(
+        "Cantidad de usuarios - Router tipo4",
+        value=150
+    )
 
-# =========================================================
-# RESTRICCIONES
-# =========================================================
+    # Negativos porque scipy minimiza
+    c = [-u1, -u2, -u3, -u4]
 
-st.header("Restricciones del Sistema")
+    st.markdown("<br>", unsafe_allow_html=True)
+    # =========================================================
+    # VARIABLES ENTERAS
+    # =========================================================
+    st.subheader("Tipo de Variables")
 
-restricciones = [
-    "Energía",
-    "Ancho de Banda",
-    "Disponibilidad de Equipos",
-    "Disipación Térmica",
-    "Personal de Mantenimiento",
-    "Cobertura de Routers",
-    "Dependencia Mínima"
-]
+    st.write("""
+    0 = Continua  
+    1 = Entera
+    """)
 
-# =========================================================
-# MATRIZ DE RESTRICCIONES
-# =========================================================
+    integrality = []
 
-A_inicial = pd.DataFrame(
-    [
-        [6, 12, 25, 40],
-        [5, 10, 20, 45],
-        [1, 2, 3, 5],
-        [2, 4, 15, 20],
-        [3, 5, 8, 12],
-        [400, 1200, 3000, 7000],
-        [1, 0, 0, -2]
-    ],
-    columns=variables,
-    index=restricciones
-)
+    cols = st.columns(4)
 
-st.subheader("Coeficientes de Restricciones")
+    for i, var in enumerate(variables):
 
-A_df = st.data_editor(
-    A_inicial,
-    use_container_width=True,
-    num_rows="fixed"
-)
+        val = cols[i].selectbox(
+            f"{var}",
+            options=[0, 1],
+            index=1
+        )
+
+        integrality.append(val)
+
+with col_der:
+    # =========================================================
+    # RESTRICCIONES
+    # =========================================================
+    st.header("Restricciones del Sistema")
+
+    restricciones = [
+        "Energía",
+        "Ancho de Banda",
+        "Disponibilidad de Equipos",
+        "Disipación Térmica",
+        "Personal de Mantenimiento",
+        "Cobertura de Routers",
+        "Dependencia Mínima"
+    ]
+
+    # =========================================================
+    # MATRIZ DE RESTRICCIONES
+    # =========================================================
+    st.subheader("Coeficientes de Restricciones")
+
+    A_inicial = pd.DataFrame(
+        [
+            [6, 12, 25, 40],
+            [5, 10, 20, 45],
+            [1, 2, 3, 5],
+            [2, 4, 15, 20],
+            [3, 5, 8, 12],
+            [400, 1200, 3000, 7000],
+            [1, 0, 0, -2]
+        ],
+        columns=variables,
+        index=restricciones
+    )
+
+    A_df = st.data_editor(
+        A_inicial,
+        use_container_width=True,
+        num_rows="fixed"
+    )
 
 # =========================================================
 # LIMITES
 # =========================================================
-
 st.subheader("Límites de Restricciones")
 
 limites_df = pd.DataFrame({
@@ -184,33 +230,9 @@ limites_editados = st.data_editor(
 )
 
 # =========================================================
-# VARIABLES ENTERAS
-# =========================================================
-
-st.subheader("Tipo de Variables")
-
-st.write("""
-0 = Continua  
-1 = Entera
-""")
-
-integrality = []
-
-cols = st.columns(4)
-
-for i, var in enumerate(variables):
-
-    val = cols[i].selectbox(
-        f"{var}",
-        options=[0, 1],
-        index=1
-    )
-
-    integrality.append(val)
-
-# =========================================================
 # RESOLVER
 # =========================================================
+st.markdown("<br>", unsafe_allow_html=True)
 
 if st.button("Resolver Modelo de Optimización"):
 
@@ -243,13 +265,13 @@ if st.button("Resolver Modelo de Optimización"):
 
             st.success("Solución óptima encontrada")
 
-            # Banner personalizado sin fondo blanco para destacar el KPI principal
+            # Bloque de salida con estilo de marquesina Retro / Synth para destacar el beneficio
             st.markdown(f"""
             <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
-                        padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 25px;
-                        border: 2px solid #00ffff; box-shadow: 0px 0px 15px rgba(0,255,255,0.3);'>
-                <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 1.5px;'>BENEFICIO MÁXIMO</p>
-                <h1 style='margin:5px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 45px !important;'>{round(-res.fun, 2):,}</h1>
+                        padding: 30px; border: 3px solid #00ffff; text-align: center;
+                        box-shadow: 8px 8px 0px #ffea00; margin-bottom: 25px;'>
+                <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>BENEFICIO MÁXIMO</p>
+                <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: Impact;'>{round(-res.fun, 2):,}</h1>
             </div>
             """, unsafe_allow_html=True)
 
