@@ -224,7 +224,7 @@ st.subheader("Límites de Restricciones")
 
 limites_df = pd.DataFrame({
     "Límite Inferior": [1, 1, 1, 1, 1, 15000, 1],
-    "Límite Superior": [500, 300, 40, 120, 80, np.inf]
+    "Límite Superior": [500, 300, 40, 120, 80, np.inf, np.inf]
 }, index=restricciones)
 
 limites_editados = st.data_editor(
