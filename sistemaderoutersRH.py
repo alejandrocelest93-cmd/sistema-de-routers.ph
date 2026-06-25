@@ -4,16 +4,16 @@ import pandas as pd
 from scipy.optimize import milp, LinearConstraint, Bounds
 
 # =========================================================
-# CONFIGURACIÓN DE PÁGINA
+# MAQUILLAJE DE LA INTERFAZ (CONFIGURACIÓN)
 # =========================================================
 
 st.set_page_config(
-    page_title="Optimización de Infraestructura de Routers",
+    page_title="RouterOptima v2.0 | Inteligencia de Red",
     layout="wide"
 )
 
 # =========================================================
-# ESTILO CSS - ESTILO VAPORWAVE / RETRO-SYNTH (SIN BLANCO)
+# ESTILO CSS - REVOLUCIÓN RETRO-SYNTH (SIN FONDO BLANCO)
 # =========================================================
 
 st.markdown("""
@@ -86,19 +86,19 @@ div.stButton > button:hover {
 """, unsafe_allow_html=True)
 
 # =========================================================
-# TÍTULO
+# TÍTULO PRINCIPAL (UPGRADE VISUAL)
 # =========================================================
 
-st.title("Optimización de Infraestructura de Routers")
+st.title("⚡ MATRIX_OPT: ARQUITECTURA DE ROUTERS SUPERESTRELLA")
 
 st.markdown("""
 <p style='color: #ffea00 !important; margin-bottom: 30px; font-size: 1.1rem; font-family: monospace;'>
-Modelo de optimización entera para planificación de infraestructura tecnológica.
+[ALGORITMO MILP AVANZADO PARA MAXIMIZAR EL DESPLIEGUE DE RED EN TIEMPO REAL]
 </p>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# VARIABLES
+# CAPAS DE HARDWARE (MÉTRICAS BASE)
 # =========================================================
 
 variables = [
@@ -109,13 +109,13 @@ variables = [
 ]
 
 # =========================================================
-# FUNCIÓN OBJETIVO
+# MOTOR DE BENEFICIOS (FUNCIÓN OBJETIVO)
 # =========================================================
 
-st.header("Maximizar Beneficio Total")
+st.header("🎯 PODER DE TRÁFICO: MAXIMIZAR CONECTIVIDAD")
 
 st.write("""
-Ingrese la cantidad de usuarios asociada a cada tipo de router.
+Ajuste el impacto de usuarios potenciales que soportará cada nivel de hardware.
 """)
 
 col1, col2, col3, col4 = st.columns(4)
@@ -140,14 +140,14 @@ u4 = col4.number_input(
     value=150
 )
 
-# Negativos porque scipy minimiza
+# Multiplicadores negativos para engañar al minimizador de scipy
 c = [-u1, -u2, -u3, -u4]
 
 # =========================================================
-# RESTRICCIONES
+# RESTRICCIONES CRÍTICAS DEL ENTORNO
 # =========================================================
 
-st.header("Restricciones del Sistema")
+st.header("🛑 BARRERAS Y RESTRICCIONES DEL ENTORNO")
 
 restricciones = [
     "Energía",
@@ -160,7 +160,7 @@ restricciones = [
 ]
 
 # =========================================================
-# MATRIZ DE RESTRICCIONES
+# MATRIZ DE CONSUMO TECNOLÓGICO
 # =========================================================
 
 A_inicial = pd.DataFrame(
@@ -177,7 +177,7 @@ A_inicial = pd.DataFrame(
     index=restricciones
 )
 
-st.subheader("Coeficientes de Restricciones")
+st.subheader("📊 Coeficientes de Consumo de Recursos")
 
 A_df = st.data_editor(
     A_inicial,
@@ -186,10 +186,10 @@ A_df = st.data_editor(
 )
 
 # =========================================================
-# LIMITES
+# CAPACIDAD MÁXIMA PERMITIDA (LÍMITES)
 # =========================================================
 
-st.subheader("Límites de Restricciones")
+st.subheader("⚙️ Umbrales Críticos Operativos (Mín / Máx)")
 
 limites_df = pd.DataFrame({
     "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
@@ -203,14 +203,13 @@ limites_editados = st.data_editor(
 )
 
 # =========================================================
-# VARIABLES ENTERAS
+# COMPORTAMIENTO MATEMÁTICO (NATURALEZA DE VARIABLE)
 # =========================================================
 
-st.subheader("Tipo de Variables")
+st.subheader("🧬 Topología de Variables")
 
 st.write("""
-0 = Continua  
-1 = Entera
+0 = Escalar Continua (Fracciones) | 1 = Entera Rígida (Equipos Físicos)
 """)
 
 integrality = []
@@ -228,10 +227,10 @@ for i, var in enumerate(variables):
     integrality.append(val)
 
 # =========================================================
-# RESOLVER
+# IGNICIÓN DEL RESOLVEDOR (CÁLCULO)
 # =========================================================
 
-if st.button("Resolver Modelo de Optimización"):
+if st.button("🔥 DISPARAR OPTIMIZACIÓN DE INFRAESTRUCTURA 🔥"):
 
     try:
 
@@ -254,22 +253,22 @@ if st.button("Resolver Modelo de Optimización"):
             integrality=integrality
         )
 
-        st.header("Resultado de Optimización")
+        st.header("🔮 PREDICCIÓN Y RESULTADOS DE RED")
 
-        st.write("Estado:", res.message)
+        st.write("Estado del Motor:", res.message)
 
         if res.success:
 
-            st.success("Solución óptima encontrada")
+            st.success("¡Despliegue matemático resuelto con éxito!")
 
             # Bloque de salida destacado con marquesina Retro / Synth
             st.markdown(f"""
             <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
                         padding: 30px; border: 3px solid #00ffff; text-align: center;
                         box-shadow: 8px 8px 0px #ffea00; margin-bottom: 25px;'>
-                <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>BENEFICIO MÁXIMO</p>
+                <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>MÁXIMO FLUJO DE USUARIOS LOGRADO</p>
                 <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: Impact;'>{round(-res.fun, 2):,}</h1>
-                <p style='margin:0; font-size: 13px; color: #00ffff !important;'>TOTAL USUARIOS SOPORTADOS</p>
+                <p style='margin:0; font-size: 13px; color: #00ffff !important;'>CAPACIDAD TOTAL SOPORTADA</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -278,19 +277,19 @@ if st.button("Resolver Modelo de Optimización"):
                 "Cantidad Óptima": np.round(res.x, 2)
             })
 
-            st.subheader("Cantidad Óptima de Routers")
+            st.subheader("📦 Plan Técnico: Unidades Recomendadas")
 
             st.dataframe(
                 resultado_df,
                 use_container_width=True
             )
 
-            st.subheader("Vector Solución")
+            st.subheader("🔮 Vector de Configuración Final")
 
             st.write(res.x)
 
         else:
-            st.error("No se encontró solución factible.")
+            st.error("Error: Las restricciones del sistema bloquean cualquier combinación matemática viable.")
 
     except Exception as e:
-        st.error(f"Error en el modelo: {e}")
+        st.error(f"Fallo en el núcleo matemático: {e}")
