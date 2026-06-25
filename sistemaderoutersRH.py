@@ -4,92 +4,89 @@ import pandas as pd
 from scipy.optimize import milp, LinearConstraint, Bounds
 
 # =========================================================
-# CONFIGURACIÓN DE PÁGINA
+# CONFIGURACIÓN DE PÁGINA Y ESTILO HARDCORE
 # =========================================================
 
 st.set_page_config(
-    page_title="Optimización de Infraestructura de Routers",
-    page_icon="💎",
+    page_title="RouterOptima | CYBER_EDITION",
+    page_icon="⚡",
     layout="wide"
 )
 
 # =========================================================
-# ESTILO CSS - ESTÉTICA PREMIUM "GLASSMORPHISM" DE BUEN GUSTO
+# ESTILO CSS - INTERFAZ NEÓN CYBERPUNK
 # =========================================================
 
 st.markdown("""
 <style>
-/* Fondo general: Oscuro profundo, elegante y cinemático */
+/* Fondo Galáctico / Futurista Animado */
+@keyframes gradientBg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .stApp {
-    background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #090d16 70%);
+    background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311042, #000c1e);
+    background-size: 400% 400%;
+    animation: gradientBg 15s ease infinite;
 }
 
-/* Tipografías y Encabezados sofisticados */
+/* Título Principal con Efecto Glitch y Neón */
+@keyframes neonPulse {
+    from { text-shadow: 0 0 10px rgba(0, 242, 254, 0.7); }
+    to { text-shadow: 0 0 25px rgba(0, 242, 254, 1); }
+}
+
 h1 {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 800 !important;
-    font-size: 3rem !important;
-    letter-spacing: -1px;
+    color: white !important;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-weight: 900 !important;
+    font-size: 3.2rem !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: neonPulse 1.5s ease-in-out infinite alternate;
 }
 
-h2 {
-    font-family: 'Inter', sans-serif;
-    color: #f8fafc !important;
-    font-weight: 600 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-bottom: 8px;
-    margin-top: 2rem !important;
+h2, h3, p, span, label {
+    color: #e2e8f0 !important;
 }
 
-h3, p, span, label {
-    font-family: 'Inter', sans-serif;
-    color: #94a3b8 !important;
-}
-
-/* Tarjetas de Cristal (Glassmorphism) para agrupar secciones */
+/* Tarjetas de Contenido Translúcidas (Glassmorphism) */
 div[data-testid="stVerticalBlock"] > div {
-    background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(20px);
+    background: rgba(15, 23, 42, 0.5) !important;
+    backdrop-filter: blur(8px);
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(243, 85, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* Inputs numéricos y selects estilizados en armonía oscura */
-div[data-baseweb="input"], div[data-baseweb="select"] {
-    background-color: rgba(30, 41, 59, 0.5) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 12px !important;
+/* Botón de Acción Principal ULTRA LLAMATIVO */
+@keyframes pulse {
+    0% { box-shadow: 0 0 15px rgba(243, 85, 255, 0.4); }
+    50% { box-shadow: 0 0 35px rgba(243, 85, 255, 0.8); }
+    100% { box-shadow: 0 0 15px rgba(243, 85, 255, 0.4); }
 }
 
-/* Dataframes / Tablas integradas estéticamente */
-div[data-testid="stDataFrame"] {
-    background-color: transparent !important;
-}
-
-/* Botón de Ejecución: Lujoso, con un degradado sutil y premium */
 div.stButton > button {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 14px !important;
-    height: 3.5em !important;
+    background: linear-gradient(90deg, #f355ff 0%, #fd3f94 50%, #ff7640 100%) !important;
+    color: white !important;
+    border-radius: 50px !important;
+    border: none !important;
+    height: 3.8em !important;
     width: 100%;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.5px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+    font-size: 20px !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    box-shadow: 0 0 20px rgba(243, 85, 255, 0.5);
+    transition: all 0.4s ease-in-out;
 }
 
 div.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
-    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%) !important;
+    transform: scale(1.04);
+    box-shadow: 0 0 45px rgba(253, 63, 148, 0.9);
+    animation: pulse 1s infinite;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -98,11 +95,11 @@ div.stButton > button:hover {
 # TÍTULO
 # =========================================================
 
-st.title("Optimización de Infraestructura de Routers")
+st.title("⚡ ROUTER_OPTIMA: CYBERNETIC DEPLOY")
 
 st.markdown("""
-<p style='font-size: 1.1rem; color: #64748b !important; margin-top: -10px;'>
-Plataforma analítica basada en optimización entera mixta para decisiones tecnológicas estratégicas.
+<p style='font-size: 1.2rem; color: #94a3b8 !important; text-align: center; margin-bottom: 20px;'>
+Modelo de optimización entera hardcore para planificación de infraestructura tecnológica.
 </p>
 """, unsafe_allow_html=True)
 
@@ -121,7 +118,7 @@ variables = [
 # FUNCIÓN OBJETIVO
 # =========================================================
 
-st.header("Maximizar Beneficio Total")
+st.header("🎯 Maximizar Beneficio Total")
 
 st.write("""
 Ingrese la cantidad de usuarios asociada a cada tipo de router.
@@ -156,7 +153,7 @@ c = [-u1, -u2, -u3, -u4]
 # RESTRICCIONES
 # =========================================================
 
-st.header("Restricciones del Sistema")
+st.header("🛡️ Restricciones del Sistema")
 
 restricciones = [
     "Energía",
@@ -172,6 +169,8 @@ restricciones = [
 # MATRIZ DE RESTRICCIONES
 # =========================================================
 
+st.subheader("📊 Coeficientes de Restricciones")
+
 A_inicial = pd.DataFrame(
     [
         [6, 12, 25, 40],
@@ -186,8 +185,6 @@ A_inicial = pd.DataFrame(
     index=restricciones
 )
 
-st.subheader("Coeficientes de Restricciones")
-
 A_df = st.data_editor(
     A_inicial,
     use_container_width=True,
@@ -198,7 +195,7 @@ A_df = st.data_editor(
 # LIMITES
 # =========================================================
 
-st.subheader("Límites de Restricciones")
+st.subheader("⚙️ Límites de Restricciones")
 
 limites_df = pd.DataFrame({
     "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
@@ -215,7 +212,7 @@ limites_editados = st.data_editor(
 # VARIABLES ENTERAS
 # =========================================================
 
-st.subheader("Tipo de Variables")
+st.subheader("🧬 Tipo de Variables")
 
 st.write("""
 0 = Continua  
@@ -242,7 +239,7 @@ for i, var in enumerate(variables):
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
-if st.button("Calcular Distribución Óptima"):
+if st.button("🔥 EJECUTAR PROTOCOLO DE OPTIMIZACIÓN 🔥"):
 
     try:
 
@@ -265,22 +262,22 @@ if st.button("Calcular Distribución Óptima"):
             integrality=integrality
         )
 
-        st.header("Resultado de Optimización")
+        st.header("✨ Resultado del Motor de Cálculo")
 
-        st.write("Estado:", res.message)
+        st.write("Estado del Solver:", res.message)
 
         if res.success:
 
-            st.success("Cálculo finalizado. Se ha hallado una solución matemáticamente óptima.")
+            st.success("Solución óptima encontrada exitosamente.")
 
-            # Tarjeta de KPI Minimalista y elegante (estilo Apple)
+            # MEGA-TARJETA DE RESULTADO TURQUESA NEÓN ULTRA BRILANTE
             st.markdown(f"""
-            <div style='background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); 
-                        border: 1px solid rgba(255,255,255,0.15); padding: 30px; border-radius: 20px; 
-                        text-align: center; margin-bottom: 30px; margin-top: 15px;'>
-                <p style='margin:0; font-size: 13px; font-weight: 600; color: #a5b4fc !important; letter-spacing: 1px; text-transform: uppercase;'>Beneficio Máximo Obtenido</p>
-                <h1 style='margin:10px 0; font-size: 50px !important; font-weight: 800; background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>{round(-res.fun, 2):,}</h1>
-                <p style='margin:0; font-size: 13px; color: #64748b !important;'>Usuarios totales soportados de forma eficiente</p>
+            <div style='background: linear-gradient(135deg, #00f2fe 0%, #00d2f0 100%); 
+                        padding: 35px; border-radius: 20px; text-align: center; margin-bottom: 30px;
+                        box-shadow: 0 10px 40px rgba(0, 242, 254, 0.5);'>
+                <p style='margin:0; font-size: 16px; font-weight: bold; color: #0f172a !important; letter-spacing: 2px;'>BENEFICIO MÁXIMO GLOBAL</p>
+                <h1 style='margin:10px 0; color: white !important; -webkit-text-fill-color: white !important; font-size: 58px !important; font-weight: 900; text-shadow: 0px 0px 20px rgba(255,255,255,0.8);'>{round(-res.fun, 2):,}</h1>
+                <p style='margin:0; font-size: 14px; color: #1e293b !important; opacity: 0.8;'>Usuarios totales soportados de forma eficiente</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -289,19 +286,19 @@ if st.button("Calcular Distribución Óptima"):
                 "Cantidad Óptima": np.round(res.x, 2)
             })
 
-            st.subheader("Cantidad Óptima de Routers")
+            st.subheader("📦 Plan de Equipamiento Recomendado")
 
             st.dataframe(
                 resultado_df,
                 use_container_width=True
             )
 
-            st.subheader("Vector Solución")
+            st.subheader("🔮 Vector de Solución Crudo")
 
             st.write(res.x)
 
         else:
-            st.error("No se encontró solución factible bajo las condiciones actuales.")
+            st.error("No se encontró solución factible.")
 
     except Exception as e:
-        st.error(f"Error en el modelo: {e}")
+        st.error(f"Error en el motor matemático: {e}")
