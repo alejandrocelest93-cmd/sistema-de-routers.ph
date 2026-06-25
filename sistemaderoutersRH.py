@@ -19,7 +19,7 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Fondo profundo de la app en azul medianoche/morado */
+/* Fondo profundo de la app en azul nocturno/morado */
 .stApp {
     background-color: #1a103c;
 }
@@ -29,10 +29,8 @@ h1 {
     background: linear-gradient(90deg, #ff007f 0%, #ff00ff 50%, #ffea00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-family: 'Impact', 'Arial Black', sans-serif;
     font-weight: bold !important;
-    font-size: 3rem !important;
-    letter-spacing: 1px;
+    font-size: 2.8rem !important;
 }
 
 h2 {
@@ -57,16 +55,16 @@ div[data-testid="stVerticalBlock"] > div {
     padding: 20px;
 }
 
-/* Modificación de data editors y selects para que no usen fondo blanco */
+/* Modificación de data editors para acoplarse al fondo oscuro */
 div[data-testid="stDataEditor"] {
     background-color: #1a103c !important;
 }
 
-/* Botón de acción ultra-llamativo en gradiente degradado */
+/* Botón de acción con estilo retro rectangular y borde brillante */
 div.stButton > button {
     background: linear-gradient(45deg, #ff007f 0%, #7000ff 100%) !important;
     color: #ffea00 !important;
-    border-radius: 0px !important; /* Estilo retro rectangular */
+    border-radius: 0px !important;
     border: 3px solid #ffea00 !important;
     height: 3.5em !important;
     width: 100%;
@@ -90,13 +88,11 @@ div.stButton > button:hover {
 # TÍTULO
 # =========================================================
 
-st.title("🔮 ROUTER OPTIMIZER // SYNTH_EDITION")
+st.title("Optimización de Infraestructura de Routers")
 
 st.markdown("""
-<p style='color: #ffea00 !important; margin-bottom: 30px; font-size: 1.1rem; font-family: monospace;'>
-[SISTEMA DE PLANIFICACIÓN MATEMÁTICA DE ALTO RENDIMIENTO]
-</p>
-""", unsafe_allow_html=True)
+Modelo de optimización entera para planificación de infraestructura tecnológica.
+""")
 
 # =========================================================
 # VARIABLES
@@ -110,36 +106,87 @@ variables = [
 ]
 
 # =========================================================
-# DISTRIBUCIÓN HORIZONTAL COMPACTA (PANEL SUPERIOR DE CONFIGURACIÓN)
+# CAMBIO DE LADOS: DISTRIBUCIÓN EN DOS COLUMNAS
 # =========================================================
 
-col_izq, col_der = st.columns([1, 1.2])
+lado_configuracion, lado_tablas = st.columns([1, 1.3])
 
-with col_izq:
-    st.header("🕹️ CAPACIDAD OBJETIVO (Alineación de Usuarios)")
-    
-    col_u1, col_u2, col_u3, col_u4 = st.columns(4)
-    u1 = col_u1.number_input("Tipo 1", value=20)
-    u2 = col_u2.number_input("Tipo 2", value=50)
-    u3 = col_u3.number_input("Tipo 3", value=90)
-    u4 = col_u4.number_input("Tipo 4", value=150)
-    
+# ---------------------------------------------------------
+# LADO IZQUIERDO: INPUTS Y SELECTORES
+# ---------------------------------------------------------
+with lado_configuracion:
+
+    # =========================================================
+    # FUNCIÓN OBJETIVO
+    # =========================================================
+
+    st.header("Maximizar Beneficio Total")
+
+    st.write("""
+    Ingrese la cantidad de usuarios asociada a cada tipo de router.
+    """)
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    u1 = col1.number_input(
+        "Cantidad de usuarios - Router tipo1",
+        value=20
+    )
+
+    u2 = col2.number_input(
+        "Cantidad de usuarios - Router tipo2",
+        value=50
+    )
+
+    u3 = col3.number_input(
+        "Cantidad de usuarios - Router tipo3",
+        value=90
+    )
+
+    u4 = col4.number_input(
+        "Cantidad de usuarios - Router tipo4",
+        value=150
+    )
+
     # Negativos porque scipy minimiza
     c = [-u1, -u2, -u3, -u4]
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.header("🧬 NATURALEZA DE VARIABLES")
-    st.write("Establezca restricciones de tipo (0 = Continua / 1 = Entera)")
-    
+    # =========================================================
+    # VARIABLES ENTERAS
+    # =========================================================
+
+    st.subheader("Tipo de Variables")
+
+    st.write("""
+    0 = Continua  
+    1 = Entera
+    """)
+
     integrality = []
-    cols_sel = st.columns(4)
+
+    cols = st.columns(4)
+
     for i, var in enumerate(variables):
-        val = cols_sel[i].selectbox(f"R{i+1}", options=[0, 1], index=1)
+
+        val = cols[i].selectbox(
+            f"{var}",
+            options=[0, 1],
+            index=1
+        )
+
         integrality.append(val)
 
-with col_der:
-    st.header("📊 PARÁMETROS TÉCNICOS DEL SISTEMA")
-    
+# ---------------------------------------------------------
+# LADO DERECHO: MATRICES Y TABLAS DE DATOS
+# ---------------------------------------------------------
+with lado_tablas:
+
+    # =========================================================
+    # RESTRICCIONES
+    # =========================================================
+
+    st.header("Restricciones del Sistema")
+
     restricciones = [
         "Energía",
         "Ancho de Banda",
@@ -149,7 +196,13 @@ with col_der:
         "Cobertura de Routers",
         "Dependencia Mínima"
     ]
-    
+
+    # =========================================================
+    # MATRIZ DE RESTRICCIONES
+    # =========================================================
+
+    st.subheader("Coeficientes de Restricciones")
+
     A_inicial = pd.DataFrame(
         [
             [6, 12, 25, 40],
@@ -163,32 +216,42 @@ with col_der:
         columns=variables,
         index=restricciones
     )
-    
-    A_df = st.data_editor(A_inicial, use_container_width=True, num_rows="fixed")
+
+    A_df = st.data_editor(
+        A_inicial,
+        use_container_width=True,
+        num_rows="fixed"
+    )
+
+    # =========================================================
+    # LIMITES
+    # =========================================================
+
+    st.subheader("Límites de Restricciones")
+
+    limites_df = pd.DataFrame({
+        "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
+        "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
+    }, index=restricciones)
+
+    limites_editados = st.data_editor(
+        limites_df,
+        use_container_width=True,
+        num_rows="fixed"
+    )
 
 # =========================================================
-# LÍMITES DE RESTRICCIONES (SECCIÓN INTERMEDIA)
-# =========================================================
-
-st.header("⚙️ UMBRALES Y CORTES DE MATRIZ")
-limites_df = pd.DataFrame({
-    "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
-    "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
-}, index=restricciones)
-
-limites_editados = st.data_editor(limites_df, use_container_width=True, num_rows="fixed")
-
-# =========================================================
-# DISPARADOR Y BLOQUE DE RESULTADOS (SECCIÓN INFERIOR)
+# RESOLVER (BOTÓN DE ACCIÓN COMPLETO HORIZONTAL)
 # =========================================================
 
 st.markdown("<br>", unsafe_allow_html=True)
-resolver_modelo = st.button("⚡ PROCESAR ALGORITMO MILP ⚡")
-st.markdown("<br>", unsafe_allow_html=True)
 
-if resolver_modelo:
+if st.button("Resolver Modelo de Optimización"):
+
     try:
+
         A = A_df.values
+
         bl = limites_editados["Límite Inferior"].values
         bu = limites_editados["Límite Superior"].values
 
@@ -206,37 +269,39 @@ if resolver_modelo:
             integrality=integrality
         )
 
-        st.header("✨ MATRIX OUTPUT: DATOS PROCESADOS")
-        st.write("**Estado del Solver:**", res.message)
+        st.header("Resultado de Optimización")
+
+        st.write("Estado:", res.message)
 
         if res.success:
-            st.balloons()
-            
-            panel_res1, panel_res2 = st.columns([1, 1.2])
-            
-            with panel_res1:
-                # Bloque de salida con estilo de marquesina Retro / Synth
-                st.markdown(f"""
-                <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
-                            padding: 30px; border: 3px solid #00ffff; text-align: center;
-                            box-shadow: 8px 8px 0px #ffea00;'>
-                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>MAX BENEFICIO ESTIMADO</p>
-                    <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: Impact;'>{round(-res.fun, 2):,}</h1>
-                    <p style='margin:0; font-size: 13px; color: #00ffff !important;'>TOTAL USUARIOS SOPORTADOS</p>
-                </div>
-                """, unsafe_allow_html=True)
 
-            with panel_res2:
-                resultado_df = pd.DataFrame({
-                    "Tipo de Router": variables,
-                    "Cantidad Óptima": np.round(res.x, 2)
-                })
+            st.success("Solución óptima encontrada")
 
-                st.subheader("📦 RECOMENDACIÓN DE EQUIPOS")
-                st.dataframe(resultado_df, use_container_width=True)
+            # Contenedor retro personalizado para destacar la métrica principal
+            st.markdown(f"""
+            <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
+                        padding: 25px; border: 2px solid #ffea00; text-align: center; margin-bottom: 25px;
+                        box-shadow: 6px 6px 0px #00ffff;'>
+                <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 1.5px;'>BENEFICIO MÁXIMO</p>
+                <h1 style='margin:5px 0; color: white !important; -webkit-text-fill-color: white !important; font-size: 45px !important;'>{round(-res.fun, 2):,}</h1>
+            </div>
+            """, unsafe_allow_html=True)
 
-                st.subheader("🔮 VECTOR RESULTANTE RAW")
-                st.write(res.x)
+            resultado_df = pd.DataFrame({
+                "Tipo de Router": variables,
+                "Cantidad Óptima": np.round(res.x, 2)
+            })
+
+            st.subheader("Cantidad Óptima de Routers")
+
+            st.dataframe(
+                resultado_df,
+                use_container_width=True
+            )
+
+            st.subheader("Vector Solución")
+
+            st.write(res.x)
 
         else:
             st.error("No se encontró solución factible.")
