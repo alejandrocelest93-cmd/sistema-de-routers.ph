@@ -13,62 +13,57 @@ st.set_page_config(
 )
 
 # =========================================================
-# ESTILO CSS - FONDO CELESTE (CAMBIADO A RETRO-DARK SIN FONDO BLANCO)
+# ESTILO CSS - FONDO CELESTE (AHORA EN LOOK RETRO-SYNTH SIN BLANCO)
 # =========================================================
 
 st.markdown("""
 <style>
-/* Fondo profundo de la app en azul nocturno */
+/* Fondo de la app en morado profundo aterciopelado */
 .stApp {
-    background-color: #161233;
+    background-color: #1a103c;
 }
 
-/* Títulos y subtítulos originales con colores vibrantes */
+/* Títulos y subtítulos con los colores solicitados originales pero estilizados */
 h1 {
-    color: #00ffff !important;
-    font-weight: 800 !important;
+    color: #ff00ff !important; /* Fucsia neón */
+    font-family: 'Arial Black', sans-serif;
+    font-weight: bold !important;
+    text-shadow: 0px 0px 10px rgba(255, 0, 255, 0.5);
 }
 
 h2, h3 {
-    color: #ff00ff !important;
-    font-weight: 700 !important;
+    color: #ffea00 !important; /* Amarillo eléctrico */
+    font-family: 'Arial Black', sans-serif;
 }
 
 p, span, label {
-    color: #e2e8f0 !important;
+    color: #00ffff !important; /* Texto en cian neón */
+    font-weight: 500;
 }
 
-/* Contenedores con fondo morado y bordes cian */
-div[data-testid="stVerticalBlock"] > div {
-    background-color: #211a47;
-    border-radius: 12px;
-    border: 1px solid #00ffff;
-    padding: 15px;
+/* Modificación de dataframes para remover el fondo blanco */
+div[data-testid="stDataEditor"], div[data-testid="stDataFrame"] {
+    background-color: #24144b !important;
 }
 
-/* Modificación de tablas para encajar en el entorno oscuro */
-div[data-testid="stDataEditor"], [data-testid="stDataFrame"] {
-    background-color: #161233 !important;
-}
-
-/* Botón llamativo con gradiente y tipografía grande */
+/* Botón estilizado retro-synth */
 div.stButton > button {
-    background: linear-gradient(90deg, #ff007f 0%, #7000ff 100%) !important;
-    color: white !important;
+    background: linear-gradient(45deg, #ff007f 0%, #7000ff 100%) !important;
+    color: #ffea00 !important;
     border-radius: 10px;
     height: 3em;
     width: 100%;
     font-size: 18px;
     font-weight: bold;
-    border: none !important;
-    box-shadow: 0px 4px 15px rgba(255, 0, 127, 0.4);
-    transition: all 0.3s ease;
+    border: 2px solid #ffea00 !important;
+    box-shadow: 4px 4px 0px #00ffff;
+    transition: all 0.2s ease;
 }
 
 div.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0px 6px 25px rgba(255, 0, 127, 0.7);
-    color: #ffea00 !important;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #00ffff;
+    color: #ffffff !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -248,10 +243,15 @@ if st.button("Resolver Modelo de Optimización"):
 
             st.success("Solución óptima encontrada")
 
-            st.metric(
-                "Beneficio Máximo",
-                round(-res.fun, 2)
-            )
+            # Banner personalizado sin fondo blanco para destacar el KPI principal
+            st.markdown(f"""
+            <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
+                        padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 25px;
+                        border: 2px solid #00ffff; box-shadow: 0px 0px 15px rgba(0,255,255,0.3);'>
+                <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 1.5px;'>BENEFICIO MÁXIMO</p>
+                <h1 style='margin:5px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 45px !important;'>{round(-res.fun, 2):,}</h1>
+            </div>
+            """, unsafe_allow_html=True)
 
             resultado_df = pd.DataFrame({
                 "Tipo de Router": variables,
