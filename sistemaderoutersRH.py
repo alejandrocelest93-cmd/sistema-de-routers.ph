@@ -9,69 +9,78 @@ from scipy.optimize import milp, LinearConstraint, Bounds
 
 st.set_page_config(
     page_title="Optimización de Infraestructura de Routers",
-    page_icon="🏢",
+    page_icon="🔮",
     layout="wide"
 )
 
 # =========================================================
-# ESTILO CSS - MINIMALISTA INDUSTRIAL / TECH NÓRDICO
+# ESTILO CSS - ESTILO VAPORWAVE / RETRO-SYNTH (SIN BLANCO)
 # =========================================================
 
 st.markdown("""
 <style>
-/* Fondo gris claro/cemento ultra limpio */
+/* Fondo profundo de la app en azul medianoche/morado */
 .stApp {
-    background-color: #f4f5f7;
+    background-color: #1a103c;
 }
 
-/* Tipografía y títulos en gris carbón profundo */
+/* Títulos con gradiente de color Retro-Fucsia a Amarillo Eléctrico */
 h1 {
-    color: #1e293b !important;
-    font-family: 'Inter', sans-serif;
-    font-weight: 700 !important;
-    font-size: 2.3rem !important;
-    letter-spacing: -0.5px;
-    margin-bottom: 20px !important;
+    background: linear-gradient(90deg, #ff007f 0%, #ff00ff 50%, #ffea00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    font-weight: bold !important;
+    font-size: 3rem !important;
+    letter-spacing: 1px;
 }
 
 h2 {
-    color: #334155 !important;
-    font-size: 1.4rem !important;
-    font-weight: 600 !important;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 8px;
-    margin-top: 20px !important;
+    color: #ff00ff !important;
+    font-size: 1.6rem !important;
+    font-weight: bold !important;
+    border-bottom: 2px dashed #ffea00;
+    padding-bottom: 5px;
 }
 
 h3, p, span, label {
-    color: #475569 !important;
+    color: #00ffff !important;
+    font-weight: 500;
 }
 
-/* Tarjetas blancas puras con bordes suaves y sombras sutiles */
+/* Contenedores con fondo morado medio y bordes cian neón */
 div[data-testid="stVerticalBlock"] > div {
-    background-color: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
-    padding: 15px;
+    background-color: #24144b;
+    border-radius: 16px;
+    border: 2px solid #00ffff;
+    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.2);
+    padding: 20px;
 }
 
-/* Botón sólido en Verde Esmeralda Industrial */
+/* Modificación de data editors y selects para que no usen fondo blanco */
+div[data-testid="stDataEditor"] {
+    background-color: #1a103c !important;
+}
+
+/* Botón de acción ultra-llamativo en gradiente degradado */
 div.stButton > button {
-    background-color: #0f766e !important;
-    color: #ffffff !important;
-    border-radius: 8px !important;
-    border: none !important;
-    height: 3.2em !important;
+    background: linear-gradient(45deg, #ff007f 0%, #7000ff 100%) !important;
+    color: #ffea00 !important;
+    border-radius: 0px !important; /* Estilo retro rectangular */
+    border: 3px solid #ffea00 !important;
+    height: 3.5em !important;
     width: 100%;
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.5px;
-    transition: background-color 0.2s ease;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 5px 5px 0px #00ffff;
+    transition: all 0.2s ease;
 }
 
 div.stButton > button:hover {
-    background-color: #115e59 !important;
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0px #00ffff;
     color: #ffffff !important;
 }
 </style>
@@ -81,11 +90,11 @@ div.stButton > button:hover {
 # TÍTULO
 # =========================================================
 
-st.title("🏢 Planificación de Infraestructura: Routers")
+st.title("🔮 ROUTER OPTIMIZER // SYNTH_EDITION")
 
 st.markdown("""
-<p style='color: #64748b !important; margin-bottom: 25px; font-size: 1rem;'>
-Panel de ingeniería y optimización entera lineal para el despliegue eficiente de recursos tecnológicos.
+<p style='color: #ffea00 !important; margin-bottom: 30px; font-size: 1.1rem; font-family: monospace;'>
+[SISTEMA DE PLANIFICACIÓN MATEMÁTICA DE ALTO RENDIMIENTO]
 </p>
 """, unsafe_allow_html=True)
 
@@ -101,39 +110,45 @@ variables = [
 ]
 
 # =========================================================
-# DISTRIBUCIÓN EN MATRIZ SUPERIOR (3 COLUMNAS DE CONTROL)
+# DISTRIBUCIÓN HORIZONTAL COMPACTA (PANEL SUPERIOR DE CONFIGURACIÓN)
 # =========================================================
 
-bloque_usuarios, bloque_coeficientes, bloque_limites = st.columns([1, 1.5, 1.2])
+col_izq, col_der = st.columns([1, 1.2])
 
-# --- COLUMNA 1: FUNCIÓN OBJETIVO ---
-with bloque_usuarios:
-    st.header("👥 Capacidad de Usuarios")
-    st.caption("Especifique la carga de usuarios objetivo por dispositivo.")
+with col_izq:
+    st.header("🕹️ CAPACIDAD OBJETIVO (Alineación de Usuarios)")
     
-    u1 = st.number_input("Router tipo1", value=20, key="u1")
-    u2 = st.number_input("Router tipo2", value=50, key="u2")
-    u3 = st.number_input("Router tipo3", value=90, key="u3")
-    u4 = st.number_input("Router tipo4", value=150, key="u4")
+    col_u1, col_u2, col_u3, col_u4 = st.columns(4)
+    u1 = col_u1.number_input("Tipo 1", value=20)
+    u2 = col_u2.number_input("Tipo 2", value=50)
+    u3 = col_u3.number_input("Tipo 3", value=90)
+    u4 = col_u4.number_input("Tipo 4", value=150)
     
     # Negativos porque scipy minimiza
     c = [-u1, -u2, -u3, -u4]
 
-# --- RESTRICCIONES COMPARTIDAS ---
-restricciones = [
-    "Energía",
-    "Ancho de Banda",
-    "Disponibilidad de Equipos",
-    "Disipación Térmica",
-    "Personal de Mantenimiento",
-    "Cobertura de Routers",
-    "Dependencia Mínima"
-]
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.header("🧬 NATURALEZA DE VARIABLES")
+    st.write("Establezca restricciones de tipo (0 = Continua / 1 = Entera)")
+    
+    integrality = []
+    cols_sel = st.columns(4)
+    for i, var in enumerate(variables):
+        val = cols_sel[i].selectbox(f"R{i+1}", options=[0, 1], index=1)
+        integrality.append(val)
 
-# --- COLUMNA 2: MATRIZ DE COEFICIENTES ---
-with bloque_coeficientes:
-    st.header("📊 Matriz Tecnológica")
-    st.caption("Coeficientes de consumo e impacto por tipo de router.")
+with col_der:
+    st.header("📊 PARÁMETROS TÉCNICOS DEL SISTEMA")
+    
+    restricciones = [
+        "Energía",
+        "Ancho de Banda",
+        "Disponibilidad de Equipos",
+        "Disipación Térmica",
+        "Personal de Mantenimiento",
+        "Cobertura de Routers",
+        "Dependencia Mínima"
+    ]
     
     A_inicial = pd.DataFrame(
         [
@@ -149,58 +164,31 @@ with bloque_coeficientes:
         index=restricciones
     )
     
-    A_df = st.data_editor(
-        A_inicial,
-        use_container_width=True,
-        num_rows="fixed",
-        key="editor_A"
-    )
-
-# --- COLUMNA 3: LIMITES Y NATURALEZA ---
-with bloque_limites:
-    st.header("⚙️ Umbrales Operativos")
-    st.caption("Límites del entorno y tipo de variable (0: Cont. | 1: Ent.)")
-    
-    limites_df = pd.DataFrame({
-        "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
-        "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
-    }, index=restricciones)
-    
-    limites_editados = st.data_editor(
-        limites_df,
-        use_container_width=True,
-        num_rows="fixed",
-        key="editor_lim"
-    )
-    
-    # Renderizado en línea de los selectboxes para ahorrar espacio
-    integrality = []
-    sub_cols = st.columns(4)
-    for i, var in enumerate(variables):
-        val = sub_cols[i].selectbox(
-            f"R{i+1}",
-            options=[0, 1],
-            index=1,
-            help=f"Tipo de variable para {var}"
-        )
-        integrality.append(val)
+    A_df = st.data_editor(A_inicial, use_container_width=True, num_rows="fixed")
 
 # =========================================================
-# ACCIÓN CENTRAL
+# LÍMITES DE RESTRICCIONES (SECCIÓN INTERMEDIA)
 # =========================================================
 
-st.markdown("<div style='margin-top: 20px; margin-bottom: 20px;'>", unsafe_allow_html=True)
-calcular = st.button("Calcular Configuración de Infraestructura")
-st.markdown("</div>", unsafe_allow_html=True)
+st.header("⚙️ UMBRALES Y CORTES DE MATRIZ")
+limites_df = pd.DataFrame({
+    "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
+    "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
+}, index=restricciones)
+
+limites_editados = st.data_editor(limites_df, use_container_width=True, num_rows="fixed")
 
 # =========================================================
-# SECCIÓN INFERIOR: RESULTADOS DEL SISTEMA
+# DISPARADOR Y BLOQUE DE RESULTADOS (SECCIÓN INFERIOR)
 # =========================================================
 
-if calcular:
+st.markdown("<br>", unsafe_allow_html=True)
+resolver_modelo = st.button("⚡ PROCESAR ALGORITMO MILP ⚡")
+st.markdown("<br>", unsafe_allow_html=True)
+
+if resolver_modelo:
     try:
         A = A_df.values
-
         bl = limites_editados["Límite Inferior"].values
         bu = limites_editados["Límite Superior"].values
 
@@ -218,39 +206,40 @@ if calcular:
             integrality=integrality
         )
 
-        st.header("✨ Diagnóstico y Resultados")
-        st.write("**Estado de ejecución:**", res.message)
+        st.header("✨ MATRIX OUTPUT: DATOS PROCESADOS")
+        st.write("**Estado del Solver:**", res.message)
 
         if res.success:
+            st.balloons()
             
-            # Distribución limpia de los resultados en dos bloques inferiores
-            col_resultado_1, col_resultado_2 = st.columns([1, 1.5])
+            panel_res1, panel_res2 = st.columns([1, 1.2])
             
-            with col_resultado_1:
-                # Banner minimalista premium para el KPI
+            with panel_res1:
+                # Bloque de salida con estilo de marquesina Retro / Synth
                 st.markdown(f"""
-                <div style='background-color: #115e59; padding: 25px; border-radius: 10px; text-align: center;'>
-                    <p style='margin:0; font-size: 12px; font-weight: 600; color: #ccfbf1 !important; letter-spacing: 1px;'>BENEFICIO MÁXIMO CALCULADO</p>
-                    <h1 style='margin:10px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 42px !important;'>{round(-res.fun, 2):,}</h1>
-                    <p style='margin:0; font-size: 13px; color: #99f6e4 !important;'>Usuarios totales soportados</p>
+                <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
+                            padding: 30px; border: 3px solid #00ffff; text-align: center;
+                            box-shadow: 8px 8px 0px #ffea00;'>
+                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>MAX BENEFICIO ESTIMADO</p>
+                    <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: Impact;'>{round(-res.fun, 2):,}</h1>
+                    <p style='margin:0; font-size: 13px; color: #00ffff !important;'>TOTAL USUARIOS SOPORTADOS</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-            with col_resultado_2:
+            with panel_res2:
                 resultado_df = pd.DataFrame({
                     "Tipo de Router": variables,
                     "Cantidad Óptima": np.round(res.x, 2)
                 })
-                
-                st.dataframe(
-                    resultado_df,
-                    use_container_width=True
-                )
-                
-                st.write("**Vector Solución:**", res.x)
+
+                st.subheader("📦 RECOMENDACIÓN DE EQUIPOS")
+                st.dataframe(resultado_df, use_container_width=True)
+
+                st.subheader("🔮 VECTOR RESULTANTE RAW")
+                st.write(res.x)
 
         else:
-            st.error("No se encontró solución factible con los parámetros provistos.")
+            st.error("No se encontró solución factible.")
 
     except Exception as e:
         st.error(f"Error en el modelo: {e}")
