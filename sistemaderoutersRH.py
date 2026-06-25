@@ -9,12 +9,11 @@ from scipy.optimize import milp, LinearConstraint, Bounds
 
 st.set_page_config(
     page_title="Optimización de Infraestructura de Routers",
-    page_icon="🔮",
     layout="wide"
 )
 
 # =========================================================
-# ESTILO CSS - ESTILO VAPORWAVE / RETRO-SYNTH (SIN BLANCO)
+# ESTILO CSS - FONDO CELESTE (Adaptado a Vaporwave sin fondo blanco)
 # =========================================================
 
 st.markdown("""
@@ -90,13 +89,11 @@ div.stButton > button:hover {
 # TÍTULO
 # =========================================================
 
-st.title("🔮 ROUTER OPTIMIZER // SYNTH_EDITION")
+st.title("Optimización de Infraestructura de Routers")
 
 st.markdown("""
-<p style='color: #ffea00 !important; margin-bottom: 30px; font-size: 1.1rem; font-family: monospace;'>
-[SISTEMA DE PLANIFICACIÓN MATEMÁTICA DE ALTO RENDIMIENTO]
-</p>
-""", unsafe_allow_html=True)
+Modelo de optimización entera para planificación de infraestructura tecnológica.
+""")
 
 # =========================================================
 # VARIABLES
@@ -110,36 +107,76 @@ variables = [
 ]
 
 # =========================================================
-# DISTRIBUCIÓN HORIZONTAL COMPACTA (PANEL SUPERIOR DE CONFIGURACIÓN)
+# FUNCIÓN OBJETIVO
 # =========================================================
 
+st.header("Maximizar Beneficio Total")
+
+st.write("""
+Ingrese la cantidad de usuarios asociada a cada tipo de router.
+""")
+
+# Distribución horizontal compacta del diseño que te gustó
 col_izq, col_der = st.columns([1, 1.2])
 
 with col_izq:
-    st.header("🕹️ CAPACIDAD OBJETIVO (Alineación de Usuarios)")
-    
-    col_u1, col_u2, col_u3, col_u4 = st.columns(4)
-    u1 = col_u1.number_input("Tipo 1", value=20)
-    u2 = col_u2.number_input("Tipo 2", value=50)
-    u3 = col_u3.number_input("Tipo 3", value=90)
-    u4 = col_u4.number_input("Tipo 4", value=150)
-    
+    col1, col2, col3, col4 = st.columns(4)
+
+    u1 = col1.number_input(
+        "Cantidad de usuarios - Router tipo1",
+        value=20
+    )
+
+    u2 = col2.number_input(
+        "Cantidad de usuarios - Router tipo2",
+        value=50
+    )
+
+    u3 = col3.number_input(
+        "Cantidad de usuarios - Router tipo3",
+        value=90
+    )
+
+    u4 = col4.number_input(
+        "Cantidad de usuarios - Router tipo4",
+        value=150
+    )
+
     # Negativos porque scipy minimiza
     c = [-u1, -u2, -u3, -u4]
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.header("🧬 NATURALEZA DE VARIABLES")
-    st.write("Establezca restricciones de tipo (0 = Continua / 1 = Entera)")
-    
+    # =========================================================
+    # VARIABLES ENTERAS
+    # =========================================================
+
+    st.subheader("Tipo de Variables")
+
+    st.write("""
+    0 = Continua  
+    1 = Entera
+    """)
+
     integrality = []
-    cols_sel = st.columns(4)
+
+    cols = st.columns(4)
+
     for i, var in enumerate(variables):
-        val = cols_sel[i].selectbox(f"R{i+1}", options=[0, 1], index=1)
+
+        val = cols[i].selectbox(
+            f"{var}",
+            options=[0, 1],
+            index=1
+        )
+
         integrality.append(val)
 
 with col_der:
-    st.header("📊 PARÁMETROS TÉCNICOS DEL SISTEMA")
-    
+    # =========================================================
+    # RESTRICCIONES
+    # =========================================================
+
+    st.header("Restricciones del Sistema")
+
     restricciones = [
         "Energía",
         "Ancho de Banda",
@@ -149,7 +186,11 @@ with col_der:
         "Cobertura de Routers",
         "Dependencia Mínima"
     ]
-    
+
+    # =========================================================
+    # MATRIZ DE RESTRICCIONES
+    # =========================================================
+
     A_inicial = pd.DataFrame(
         [
             [6, 12, 25, 40],
@@ -163,32 +204,42 @@ with col_der:
         columns=variables,
         index=restricciones
     )
-    
-    A_df = st.data_editor(A_inicial, use_container_width=True, num_rows="fixed")
+
+    st.subheader("Coeficientes de Restricciones")
+
+    A_df = st.data_editor(
+        A_inicial,
+        use_container_width=True,
+        num_rows="fixed"
+    )
 
 # =========================================================
-# LÍMITES DE RESTRICCIONES (SECCIÓN INTERMEDIA)
+# LIMITES
 # =========================================================
 
-st.header("⚙️ UMBRALES Y CORTES DE MATRIZ")
+st.subheader("Límites de Restricciones")
+
 limites_df = pd.DataFrame({
     "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
     "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
 }, index=restricciones)
 
-limites_editados = st.data_editor(limites_df, use_container_width=True, num_rows="fixed")
+limites_editados = st.data_editor(
+    limites_df,
+    use_container_width=True,
+    num_rows="fixed"
+)
 
 # =========================================================
-# DISPARADOR Y BLOQUE DE RESULTADOS (SECCIÓN INFERIOR)
+# RESOLVER
 # =========================================================
 
-st.markdown("<br>", unsafe_allow_html=True)
-resolver_modelo = st.button("⚡ PROCESAR ALGORITMO MILP ⚡")
-st.markdown("<br>", unsafe_allow_html=True)
+if st.button("Resolver Modelo de Optimización"):
 
-if resolver_modelo:
     try:
+
         A = A_df.values
+
         bl = limites_editados["Límite Inferior"].values
         bu = limites_editados["Límite Superior"].values
 
@@ -206,23 +257,24 @@ if resolver_modelo:
             integrality=integrality
         )
 
-        st.header("✨ MATRIX OUTPUT: DATOS PROCESADOS")
-        st.write("**Estado del Solver:**", res.message)
+        st.header("Resultado de Optimización")
+
+        st.write("Estado:", res.message)
 
         if res.success:
-            st.balloons()
-            
+
+            st.success("Solución óptima encontrada")
+
             panel_res1, panel_res2 = st.columns([1, 1.2])
-            
+
             with panel_res1:
-                # Bloque de salida con estilo de marquesina Retro / Synth
                 st.markdown(f"""
                 <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
                             padding: 30px; border: 3px solid #00ffff; text-align: center;
                             box-shadow: 8px 8px 0px #ffea00;'>
-                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>MAX BENEFICIO ESTIMADO</p>
+                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>BENEFICIO MÁXIMO</p>
                     <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: Impact;'>{round(-res.fun, 2):,}</h1>
-                    <p style='margin:0; font-size: 13px; color: #00ffff !important;'>TOTAL USUARIOS SOPORTADOS</p>
+                    <p style='margin:0; font-size: 13px; color: #00ffff !important;'>Usuarios totales soportados</p>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -232,10 +284,10 @@ if resolver_modelo:
                     "Cantidad Óptima": np.round(res.x, 2)
                 })
 
-                st.subheader("📦 RECOMENDACIÓN DE EQUIPOS")
+                st.subheader("Cantidad Óptima de Routers")
                 st.dataframe(resultado_df, use_container_width=True)
 
-                st.subheader("🔮 VECTOR RESULTANTE RAW")
+                st.subheader("Vector Solución")
                 st.write(res.x)
 
         else:
