@@ -13,30 +13,34 @@ st.set_page_config(
 )
 
 # =========================================================
-# ESTILO CSS - FONDO RETRO-SYNTH (SIN FONDO BLANCO)
+# ESTILO CSS - FONDO CELESTE (CAMBIADO A RETRO-SYNTH SIN BLANCO)
 # =========================================================
 
 st.markdown("""
 <style>
-/* Fondo profundo de la app en azul medianoche/morado */
+/* Fondo profundo de la app sin usar blanco */
 .stApp {
     background-color: #1a103c;
 }
 
-/* Títulos con estilo Retro-Fucsia brillante */
+/* Títulos principales con efecto vibrante */
 h1 {
-    color: #ff00ff !important;
-    font-family: 'Arial Black', sans-serif;
+    background: linear-gradient(90deg, #ff007f 0%, #ff00ff 50%, #ffea00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Impact', sans-serif;
     font-weight: bold !important;
 }
 
 h2, h3 {
     color: #00ffff !important;
-    font-family: 'Arial Black', sans-serif;
+    font-weight: bold !important;
+    border-bottom: 2px dashed #ff00ff;
+    padding-bottom: 5px;
 }
 
 p, span, label {
-    color: #e2e8f0 !important;
+    color: #ffea00 !important;
 }
 
 /* Contenedores con fondo morado medio y bordes cian neón */
@@ -48,26 +52,30 @@ div[data-testid="stVerticalBlock"] > div {
     padding: 20px;
 }
 
-/* Evitamos fondos blancos en los editores de datos */
+/* Modificación de data editors para que no usen fondo blanco */
 div[data-testid="stDataEditor"] {
     background-color: #1a103c !important;
 }
 
-/* Botón de acción rectangular retro con sombra sólida */
+/* Botón con estilo retro rectangular de alto impacto */
 div.stButton > button {
     background: linear-gradient(45deg, #ff007f 0%, #7000ff 100%) !important;
     color: #ffea00 !important;
     border-radius: 0px !important;
     border: 3px solid #ffea00 !important;
-    height: 3.5em !important;
+    height: 3em;
     width: 100%;
-    font-size: 18px !important;
+    font-size: 18px;
     font-weight: 900 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 5px 5px 0px #00ffff;
+    transition: all 0.2s ease;
 }
 
 div.stButton > button:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0px #00ffff;
+    box-shadow: 7px 7px 0px #00ffff;
     color: #ffffff !important;
 }
 </style>
@@ -95,127 +103,137 @@ variables = [
 ]
 
 # =========================================================
-# FUNCIÓN OBJETIVO
+# CAMBIO DE LADOS Y REORGANIZACIÓN ESPACIAL (MANTENIENDO CONTENIDOS)
 # =========================================================
 
-st.header("Maximizar Beneficio Total")
+col_datos, col_matriz = st.columns([1, 1.3])
 
-st.write("""
-Ingrese la cantidad de usuarios asociada a cada tipo de router.
-""")
+with col_datos:
+    # =========================================================
+    # FUNCIÓN OBJETIVO
+    # =========================================================
 
-col1, col2, col3, col4 = st.columns(4)
+    st.header("Maximizar Beneficio Total")
 
-u1 = col1.number_input(
-    "Cantidad de usuarios - Router tipo1",
-    value=20
-)
+    st.write("""
+    Ingrese la cantidad de usuarios asociada a cada tipo de router.
+    """)
 
-u2 = col2.number_input(
-    "Cantidad de usuarios - Router tipo2",
-    value=50
-)
+    col1, col2, col3, col4 = st.columns(4)
 
-u3 = col3.number_input(
-    "Cantidad de usuarios - Router tipo3",
-    value=90
-)
-
-u4 = col4.number_input(
-    "Cantidad de usuarios - Router tipo4",
-    value=150
-)
-
-# Negativos porque scipy minimiza
-c = [-u1, -u2, -u3, -u4]
-
-# =========================================================
-# RESTRICCIONES
-# =========================================================
-
-st.header("Restricciones del Sistema")
-
-restricciones = [
-    "Energía",
-    "Ancho de Banda",
-    "Disponibilidad de Equipos",
-    "Disipación Térmica",
-    "Personal de Mantenimiento",
-    "Cobertura de Routers",
-    "Dependencia Mínima"
-]
-
-# =========================================================
-# MATRIZ DE RESTRICCIONES
-# =========================================================
-
-A_inicial = pd.DataFrame(
-    [
-        [6, 12, 25, 40],
-        [5, 10, 20, 45],
-        [1, 2, 3, 5],
-        [2, 4, 15, 20],
-        [3, 5, 8, 12],
-        [400, 1200, 3000, 7000],
-        [1, 0, 0, -2]
-    ],
-    columns=variables,
-    index=restricciones
-)
-
-st.subheader("Coeficientes de Restricciones")
-
-A_df = st.data_editor(
-    A_inicial,
-    use_container_width=True,
-    num_rows="fixed"
-)
-
-# =========================================================
-# LIMITES
-# =========================================================
-
-st.subheader("Límites de Restricciones")
-
-limites_df = pd.DataFrame({
-    "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
-    "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
-}, index=restricciones)
-
-limites_editados = st.data_editor(
-    limites_df,
-    use_container_width=True,
-    num_rows="fixed"
-)
-
-# =========================================================
-# VARIABLES ENTERAS
-# =========================================================
-
-st.subheader("Tipo de Variables")
-
-st.write("""
-0 = Continua  
-1 = Entera
-""")
-
-integrality = []
-
-cols = st.columns(4)
-
-for i, var in enumerate(variables):
-
-    val = cols[i].selectbox(
-        f"{var}",
-        options=[0, 1],
-        index=1
+    u1 = col1.number_input(
+        "Cantidad de usuarios - Router tipo1",
+        value=20
     )
 
-    integrality.append(val)
+    u2 = col2.number_input(
+        "Cantidad de usuarios - Router tipo2",
+        value=50
+    )
+
+    u3 = col3.number_input(
+        "Cantidad de usuarios - Router tipo3",
+        value=90
+    )
+
+    u4 = col4.number_input(
+        "Cantidad de usuarios - Router tipo4",
+        value=150
+    )
+
+    # Negativos porque scipy minimiza
+    c = [-u1, -u2, -u3, -u4]
+
+    # =========================================================
+    # VARIABLES ENTERAS
+    # =========================================================
+
+    st.subheader("Tipo de Variables")
+
+    st.write("""
+    0 = Continua  
+    1 = Entera
+    """)
+
+    integrality = []
+
+    cols = st.columns(4)
+
+    for i, var in enumerate(variables):
+
+        val = cols[i].selectbox(
+            f"{var}",
+            options=[0, 1],
+            index=1
+        )
+
+        integrality.append(val)
+
+with col_matriz:
+    # =========================================================
+    # RESTRICCIONES
+    # =========================================================
+
+    st.header("Restricciones del Sistema")
+
+    restricciones = [
+        "Energía",
+        "Ancho de Banda",
+        "Disponibilidad de Equipos",
+        "Disipación Térmica",
+        "Personal de Mantenimiento",
+        "Cobertura de Routers",
+        "Dependencia Mínima"
+    ]
+
+    # =========================================================
+    # MATRIZ DE RESTRICCIONES
+    # =========================================================
+
+    A_inicial = pd.DataFrame(
+        [
+            [6, 12, 25, 40],
+            [5, 10, 20, 45],
+            [1, 2, 3, 5],
+            [2, 4, 15, 20],
+            [3, 5, 8, 12],
+            [400, 1200, 3000, 7000],
+            [1, 0, 0, -2]
+        ],
+        columns=variables,
+        index=restricciones
+    )
+
+    st.subheader("Coeficientes de Restricciones")
+
+    A_df = st.data_editor(
+        A_inicial,
+        use_container_width=True,
+        num_rows="fixed"
+    )
+
+    # =========================================================
+    # LIMITES
+    # =========================================================
+
+    st.subheader("Límites de Restricciones")
+
+    limites_df = pd.DataFrame({
+        "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
+        "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
+    }, index=restricciones)
+
+    limites_editados = st.data_editor(
+        limites_df,
+        use_container_width=True,
+        num_rows="fixed"
+    )
 
 # =========================================================
 # RESOLVER
 # =========================================================
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 if st.button("Resolver Modelo de Optimización"):
 
@@ -248,10 +266,15 @@ if st.button("Resolver Modelo de Optimización"):
 
             st.success("Solución óptima encontrada")
 
-            st.metric(
-                "Beneficio Máximo",
-                round(-res.fun, 2)
-            )
+            # Removido st.metric grisáceo por un contenedor a medida de alta visibilidad
+            st.markdown(f"""
+            <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
+                        padding: 25px; border-radius: 0px; text-align: center; margin-bottom: 25px;
+                        border: 2px solid #ffea00; box-shadow: 5px 5px 0px #00ffff;'>
+                <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 1px;'>BENEFICIO MÁXIMO</p>
+                <h1 style='margin:5px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 45px !important;'>{round(-res.fun, 2):,}</h1>
+            </div>
+            """, unsafe_allow_html=True)
 
             resultado_df = pd.DataFrame({
                 "Tipo de Router": variables,
