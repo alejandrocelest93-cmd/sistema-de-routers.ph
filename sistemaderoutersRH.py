@@ -90,11 +90,11 @@ div.stButton > button:hover {
 # TÍTULO
 # =========================================================
 
-st.title("🔮 ROUTER OPTIMIZER // SYNTH_EDITION")
+st.title("🔮Optimización de Infraestructura de Routers")
 
 st.markdown("""
 <p style='color: #ffea00 !important; margin-bottom: 30px; font-size: 1.1rem; font-family: monospace;'>
-[SISTEMA DE PLANIFICACIÓN MATEMÁTICA DE ALTO RENDIMIENTO]
+[Modelo de optimización entera para planificación de infraestructura tecnológica]
 </p>
 """, unsafe_allow_html=True)
 
@@ -116,13 +116,13 @@ variables = [
 col_izq, col_der = st.columns([1, 1.2])
 
 with col_izq:
-    st.header("🕹️ CAPACIDAD OBJETIVO (Alineación de Usuarios)")
+    st.header("🕹️ Ingrese la cantidad de usuarios asociada a cada tipo de router.")
     
     col_u1, col_u2, col_u3, col_u4 = st.columns(4)
-    u1 = col_u1.number_input("Tipo 1", value=20)
-    u2 = col_u2.number_input("Tipo 2", value=50)
-    u3 = col_u3.number_input("Tipo 3", value=90)
-    u4 = col_u4.number_input("Tipo 4", value=150)
+    u1 = col_u1.number_input("Cantidad de usuarios - Router tipo1", value=20)
+    u2 = col_u2.number_input("Cantidad de usuarios - Router tipo2", value=50)
+    u3 = col_u3.number_input("Cantidad de usuarios - Router tipo3", value=90)
+    u4 = col_u4.number_input("Cantidad de usuarios - Router tipo4", value=150)
     
     # Negativos porque scipy minimiza
     c = [-u1, -u2, -u3, -u4]
