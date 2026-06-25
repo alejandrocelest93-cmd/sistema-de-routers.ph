@@ -1,153 +1,248 @@
+import streamlit as st
+import numpy as np
+import pandas as pd
+from scipy.optimize import milp, LinearConstraint, Bounds
+
 # =========================================================
 # CONFIGURACIÓN DE PÁGINA
 # =========================================================
 
 st.set_page_config(
-    page_title="Electronic Engineering Optimization System",
-    page_icon="⚡",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="Optimización de Infraestructura de Routers",
+    layout="wide"
 )
 
 # =========================================================
-# ESTILO CSS - INGENIERÍA ELECTRÓNICA
+# ESTILO CSS - FONDO CELESTE
 # =========================================================
 
 st.markdown("""
 <style>
-
-/* Fondo general */
 .stApp {
-    background: linear-gradient(135deg, #08111f 0%, #111827 100%);
-    color: #e5e7eb;
+    background-color: #cfefff;
 }
 
-/* Títulos */
-h1 {
-    color: #00e5ff;
-    text-align: center;
-    font-size: 3rem;
-    border-bottom: 3px solid #00e5ff;
-    padding-bottom: 10px;
-    text-shadow: 0px 0px 20px #00e5ff;
+h1, h2, h3 {
+    color: #003366;
 }
 
-h2, h3 {
-    color: #4ade80;
-}
-
-/* Texto */
-p, label, div {
-    color: #d1d5db;
-}
-
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: #0b1220;
-}
-
-/* Inputs */
-.stNumberInput input {
-    background-color: #1e293b;
-    color: white;
-    border: 1px solid #00e5ff;
-    border-radius: 8px;
-}
-
-/* Select */
-div[data-baseweb="select"] {
-    background-color: #1e293b;
-    border-radius: 8px;
-}
-
-/* Dataframes */
 [data-testid="stDataFrame"] {
-    border: 1px solid #00e5ff;
-    border-radius: 10px;
+    background-color: white;
 }
 
-/* Botón */
 div.stButton > button {
-    background: linear-gradient(90deg, #00e5ff, #0066ff);
+    background-color: #007acc;
     color: white;
-    border: none;
-    border-radius: 15px;
-    height: 3.5em;
+    border-radius: 10px;
+    height: 3em;
     width: 100%;
-    font-size: 20px;
-    font-weight: bold;
-    box-shadow: 0px 0px 20px #00e5ff;
-    transition: 0.3s;
+    font-size: 18px;
 }
 
 div.stButton > button:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 0px 35px #00e5ff;
+    background-color: #005f99;
 }
-
-/* Métricas */
-[data-testid="metric-container"] {
-    background-color: #111827;
-    border: 2px solid #4ade80;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0px 0px 20px rgba(74,222,128,0.4);
-}
-
-/* Alertas */
-.stSuccess {
-    border-left: 5px solid #4ade80;
-}
-
-.stError {
-    border-left: 5px solid red;
-}
-
-/* Tarjetas */
-.card {
-    background-color: #111827;
-    padding: 20px;
-    border-radius: 15px;
-    border: 1px solid #00e5ff;
-    box-shadow: 0px 0px 15px rgba(0,229,255,0.2);
-}
-
 </style>
 """, unsafe_allow_html=True)
 
 # =========================================================
-# ENCABEZADO PRINCIPAL
+# TÍTULO
 # =========================================================
 
-st.markdown("""
-<h1>⚡ Electronic Engineering Optimization System ⚡</h1>
-""", unsafe_allow_html=True)
+st.title("Optimización de Infraestructura de Routers")
 
 st.markdown("""
-<div class="card">
-<h3>📡 Optimización Inteligente de Infraestructura de Routers</h3>
+Modelo de optimización entera para planificación de infraestructura tecnológica.
+""")
 
-Sistema basado en Programación Lineal Entera Mixta (MILP)
-para el diseño y optimización de redes de telecomunicaciones.
+# =========================================================
+# VARIABLES
+# =========================================================
 
-✔ Maximización de cobertura.
+variables = [
+    "Routers tipo1",
+    "Routers tipo2",
+    "Routers tipo3",
+    "Routers tipo4"
+]
 
-✔ Optimización energética.
+# =========================================================
+# FUNCIÓN OBJETIVO
+# =========================================================
 
-✔ Restricciones térmicas.
+st.header("Maximizar Beneficio Total")
 
-✔ Planificación de infraestructura.
+st.write("""
+Ingrese la cantidad de usuarios asociada a cada tipo de router.
+""")
 
-✔ Ingeniería electrónica aplicada.
-</div>
-""", unsafe_allow_html=True)
+col1, col2, col3, col4 = st.columns(4)
 
-st.write("")
+u1 = col1.number_input(
+    "Cantidad de usuarios - Router tipo1",
+    value=20
+)
 
-col1, col2, col3 = st.columns(3)
+u2 = col2.number_input(
+    "Cantidad de usuarios - Router tipo2",
+    value=50
+)
 
-col1.metric("Modelo", "MILP")
-col2.metric("Área", "Telecom")
-col3.metric("Variables", "4")
+u3 = col3.number_input(
+    "Cantidad de usuarios - Router tipo3",
+    value=90
+)
 
-st.divider()
+u4 = col4.number_input(
+    "Cantidad de usuarios - Router tipo4",
+    value=150
+)
+
+# Negativos porque scipy minimiza
+c = [-u1, -u2, -u3, -u4]
+
+# =========================================================
+# RESTRICCIONES
+# =========================================================
+
+st.header("Restricciones del Sistema")
+
+restricciones = [
+    "Energía",
+    "Ancho de Banda",
+    "Disponibilidad de Equipos",
+    "Disipación Térmica",
+    "Personal de Mantenimiento",
+    "Cobertura de Routers",
+    "Dependencia Mínima"
+]
+
+# =========================================================
+# MATRIZ DE RESTRICCIONES
+# =========================================================
+
+A_inicial = pd.DataFrame(
+    [
+        [6, 12, 25, 40],
+        [5, 10, 20, 45],
+        [1, 2, 3, 5],
+        [2, 4, 15, 20],
+        [3, 5, 8, 12],
+        [400, 1200, 3000, 7000],
+        [1, 0, 0, -2]
+    ],
+    columns=variables,
+    index=restricciones
+)
+
+st.subheader("Coeficientes de Restricciones")
+
+A_df = st.data_editor(
+    A_inicial,
+    use_container_width=True,
+    num_rows="fixed"
+)
+
+# =========================================================
+# LIMITES
+# =========================================================
+
+st.subheader("Límites de Restricciones")
+
+limites_df = pd.DataFrame({
+    "Límite Inferior": [1, 1, 1, 1, 1, 1, 1],
+    "Límite Superior": [500, 300, 40, 120, 80, 750000, np.inf]
+}, index=restricciones)
+
+limites_editados = st.data_editor(
+    limites_df,
+    use_container_width=True,
+    num_rows="fixed"
+)
+
+# =========================================================
+# VARIABLES ENTERAS
+# =========================================================
+
+st.subheader("Tipo de Variables")
+
+st.write("""
+0 = Continua  
+1 = Entera
+""")
+
+integrality = []
+
+cols = st.columns(4)
+
+for i, var in enumerate(variables):
+
+    val = cols[i].selectbox(
+        f"{var}",
+        options=[0, 1],
+        index=1
+    )
+
+    integrality.append(val)
+
+# =========================================================
+# RESOLVER
+# =========================================================
+
+if st.button("Resolver Modelo de Optimización"):
+
+    try:
+
+        A = A_df.values
+
+        bl = limites_editados["Límite Inferior"].values
+        bu = limites_editados["Límite Superior"].values
+
+        constraints = LinearConstraint(A, bl, bu)
+
+        bounds = Bounds(
+            [0] * len(variables),
+            [np.inf] * len(variables)
+        )
+
+        res = milp(
+            c=c,
+            constraints=constraints,
+            bounds=bounds,
+            integrality=integrality
+        )
+
+        st.header("Resultado de Optimización")
+
+        st.write("Estado:", res.message)
+
+        if res.success:
+
+            st.success("Solución óptima encontrada")
+
+            st.metric(
+                "Beneficio Máximo",
+                round(-res.fun, 2)
+            )
+
+            resultado_df = pd.DataFrame({
+                "Tipo de Router": variables,
+                "Cantidad Óptima": np.round(res.x, 2)
+            })
+
+            st.subheader("Cantidad Óptima de Routers")
+
+            st.dataframe(
+                resultado_df,
+                use_container_width=True
+            )
+
+            st.subheader("Vector Solución")
+
+            st.write(res.x)
+
+        else:
+            st.error("No se encontró solución factible.")
+
+    except Exception as e:
+        st.error(f"Error en el modelo: {e}")
