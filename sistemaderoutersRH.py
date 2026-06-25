@@ -13,74 +13,73 @@ st.set_page_config(
 )
 
 # =========================================================
-# ESTILO CSS - FONDO CELESTE (Adaptado a Vaporwave sin fondo blanco)
+# ESTILO CSS - REVOLUCIÓN FRUTIGER AERO (AERO GLASS / ECO-TECH)
 # =========================================================
 
 st.markdown("""
 <style>
-/* Fondo profundo de la app en azul medianoche/morado */
+/* Fondo degradado clásico: Azul cielo brillante con un toque verde orgánico abajo */
 .stApp {
-    background-color: #1a103c;
+    background: linear-gradient(180deg, #53a0fd 0%, #a1dbff 50%, #e2f4cd 100%) fixed;
 }
 
-/* Títulos con gradiente de color Retro-Fucsia a Amarillo Eléctrico */
+/* Títulos limpios, redondeados y con reflejo blanco estilo Web 2.0 */
 h1 {
-    background: linear-gradient(90deg, #ff007f 0%, #ff00ff 50%, #ffea00 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-family: 'Impact', 'Arial Black', sans-serif;
-    font-weight: bold !important;
-    font-size: 3rem !important;
-    letter-spacing: 1px;
+    color: #0b3c5d !important;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    font-weight: 700 !important;
+    font-size: 2.8rem !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-h2 {
-    color: #ff00ff !important;
-    font-size: 1.6rem !important;
-    font-weight: bold !important;
-    border-bottom: 2px dashed #ffea00;
-    padding-bottom: 5px;
+h2, h3 {
+    color: #0d5c75 !important;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 600 !important;
 }
 
-h3, p, span, label {
-    color: #00ffff !important;
+p, span, label {
+    color: #1e3a47 !important;
     font-weight: 500;
 }
 
-/* Contenedores con fondo morado medio y bordes cian neón */
+/* Tarjetas con Efecto Windows Aero Glass (Vidrio Esmerilado) */
 div[data-testid="stVerticalBlock"] > div {
-    background-color: #24144b;
-    border-radius: 16px;
-    border: 2px solid #00ffff;
-    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.2);
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(15px) saturate(120%);
+    -webkit-backdrop-filter: blur(15px) saturate(120%);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(31, 135, 240, 0.15);
+    padding: 22px;
 }
 
-/* Modificación de data editors y selects para que no usen fondo blanco */
+/* Tablas y editores integrados al look brillante */
 div[data-testid="stDataEditor"] {
-    background-color: #1a103c !important;
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 8px;
 }
 
-/* Botón de acción ultra-llamativo en gradiente degradado */
+/* El icónico botón de Windows Vista/7: Azul brillante, glossy y redondeado */
 div.stButton > button {
-    background: linear-gradient(45deg, #ff007f 0%, #7000ff 100%) !important;
-    color: #ffea00 !important;
-    border-radius: 0px !important; /* Estilo retro rectangular */
-    border: 3px solid #ffea00 !important;
-    height: 3.5em !important;
+    background: linear-gradient(180deg, #52bdfc 0%, #008be3 50%, #006eb2 100%) !important;
+    color: white !important;
+    border-radius: 30px !important; 
+    border: 1px solid #00558a !important;
+    box-shadow: inset 0px 1px 3px rgba(255,255,255,0.8), 0px 4px 10px rgba(0,0,0,0.15);
+    height: 3.4em !important;
     width: 100%;
-    font-size: 18px !important;
-    font-weight: 900 !important;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    box-shadow: 5px 5px 0px #00ffff;
-    transition: all 0.2s ease;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease-in-out;
 }
 
 div.stButton > button:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 7px 7px 0px #00ffff;
-    color: #ffffff !important;
+    background: linear-gradient(180deg, #7ad2ff 0%, #1ea5fd 50%, #0083d6 100%) !important;
+    box-shadow: inset 0px 1px 3px rgba(255,255,255,0.9), 0px 0px 15px rgba(82, 189, 252, 0.6);
+    color: white !important;
+    transform: translateY(-1px);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -262,7 +261,7 @@ if st.button("Resolver Modelo de Optimización"):
 
         if res.success:
             
-            # ¡Globos agregados aquí!
+            # Los globos festivos clásicos
             st.balloons()
 
             st.success("Solución óptima encontrada")
@@ -270,13 +269,15 @@ if st.button("Resolver Modelo de Optimización"):
             panel_res1, panel_res2 = st.columns([1, 1.2])
 
             with panel_res1:
+                # Banner con gradiente Aqua brillante y efecto cristalino "Glossy"
                 st.markdown(f"""
-                <div style='background: linear-gradient(135deg, #ff007f 0%, #7000ff 100%); 
-                            padding: 30px; border: 3px solid #00ffff; text-align: center;
-                            box-shadow: 8px 8px 0px #ffea00;'>
-                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #ffea00 !important; letter-spacing: 2px;'>BENEFICIO MÁXIMO</p>
-                    <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: Impact;'>{round(-res.fun, 2):,}</h1>
-                    <p style='margin:0; font-size: 13px; color: #00ffff !important;'>Usuarios totales soportados</p>
+                <div style='background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%); 
+                            padding: 30px; border-radius: 12px; text-align: center;
+                            border: 1px solid rgba(255,255,255,0.4);
+                            box-shadow: 0px 5px 20px rgba(0, 131, 176, 0.3);'>
+                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #e0f7fa !important; letter-spacing: 1px;'>BENEFICIO MÁXIMO</p>
+                    <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: sans-serif; text-shadow: 0px 2px 4px rgba(0,0,0,0.2);'>{round(-res.fun, 2):,}</h1>
+                    <p style='margin:0; font-size: 13px; color: #b2ebf2 !important;'>Usuarios totales soportados</p>
                 </div>
                 """, unsafe_allow_html=True)
 
