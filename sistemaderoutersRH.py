@@ -13,71 +13,76 @@ st.set_page_config(
 )
 
 # =========================================================
-# ESTILO CSS - REVOLUCIÓN FRUTIGER AERO (AERO GLASS / ECO-TECH)
+# ESTILO CSS - FRUTIGER AERO (WINDOWS VISTA / 7 GLOW)
 # =========================================================
 
 st.markdown("""
 <style>
-/* Fondo degradado clásico: Azul cielo brillante con un toque verde orgánico abajo */
+/* Fondo: El clásico degradado brillante de cielo azul limpio y naturaleza verde */
 .stApp {
-    background: linear-gradient(180deg, #53a0fd 0%, #a1dbff 50%, #e2f4cd 100%) fixed;
+    background: linear-gradient(180deg, #50b5ff 0%, #a3e5ff 40%, #eefcff 65%, #60d643 100%);
+    background-attachment: fixed;
 }
 
-/* Títulos limpios, redondeados y con reflejo blanco estilo Web 2.0 */
+/* Títulos principales con sombra suave y estilo tipográfico de la época */
 h1 {
-    color: #0b3c5d !important;
-    font-family: 'Segoe UI', -apple-system, sans-serif;
-    font-weight: 700 !important;
+    color: #0c3c60 !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600 !important;
     font-size: 2.8rem !important;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 h2, h3 {
-    color: #0d5c75 !important;
+    color: #0b4c10 !important;
     font-family: 'Segoe UI', sans-serif;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.9);
 }
 
 p, span, label {
-    color: #1e3a47 !important;
-    font-weight: 500;
+    color: #1a3a54 !important;
+    font-weight: 600 !important;
 }
 
-/* Tarjetas con Efecto Windows Aero Glass (Vidrio Esmerilado) */
+/* Efecto Windows Aero Glass: Transparencia vítrea, bordes brillantes y reflejos de luz */
 div[data-testid="stVerticalBlock"] > div {
     background: rgba(255, 255, 255, 0.45) !important;
-    backdrop-filter: blur(15px) saturate(120%);
-    -webkit-backdrop-filter: blur(15px) saturate(120%);
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 8px 32px 0 rgba(31, 135, 240, 0.15);
-    padding: 22px;
+    backdrop-filter: blur(15px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(140%) !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 135, 195, 0.25),
+                inset 0 1px 0 rgba(255,255,255,0.6) !important;
+    padding: 20px;
 }
 
-/* Tablas y editores integrados al look brillante */
+/* Modificación de data editors para que mantengan la transparencia Aqua */
 div[data-testid="stDataEditor"] {
-    background-color: rgba(255, 255, 255, 0.7) !important;
+    background-color: rgba(240, 252, 255, 0.7) !important;
     border-radius: 8px;
 }
 
-/* El icónico botón de Windows Vista/7: Azul brillante, glossy y redondeado */
+/* Botón estilo Windows 7 / Aqua: Esfera vítrea brillante y bordes redondeados */
 div.stButton > button {
-    background: linear-gradient(180deg, #52bdfc 0%, #008be3 50%, #006eb2 100%) !important;
+    background: linear-gradient(180deg, #87e0fd 0%, #53cbf1 40%, #05abe0 100%) !important;
     color: white !important;
-    border-radius: 30px !important; 
-    border: 1px solid #00558a !important;
-    box-shadow: inset 0px 1px 3px rgba(255,255,255,0.8), 0px 4px 10px rgba(0,0,0,0.15);
-    height: 3.4em !important;
+    text-shadow: 0px -1px 2px rgba(0, 0, 0, 0.4) !important;
+    border-radius: 20px !important; 
+    border: 1px solid #057ca5 !important;
+    height: 3.5em !important;
     width: 100%;
     font-size: 16px !important;
     font-weight: bold !important;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease-in-out;
+    box-shadow: 0px 4px 10px rgba(5, 171, 224, 0.4), 
+                inset 0px 1px 3px rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
 }
 
 div.stButton > button:hover {
-    background: linear-gradient(180deg, #7ad2ff 0%, #1ea5fd 50%, #0083d6 100%) !important;
-    box-shadow: inset 0px 1px 3px rgba(255,255,255,0.9), 0px 0px 15px rgba(82, 189, 252, 0.6);
+    background: linear-gradient(180deg, #b3efff 0%, #76dbff 40%, #22c4f7 100%) !important;
+    box-shadow: 0px 6px 15px rgba(5, 171, 224, 0.6), 
+                inset 0px 1px 5px rgba(255,255,255,0.9);
     color: white !important;
     transform: translateY(-1px);
 }
@@ -261,7 +266,7 @@ if st.button("Resolver Modelo de Optimización"):
 
         if res.success:
             
-            # Los globos festivos clásicos
+            # Efecto mítico de globos intacto
             st.balloons()
 
             st.success("Solución óptima encontrada")
@@ -269,15 +274,14 @@ if st.button("Resolver Modelo de Optimización"):
             panel_res1, panel_res2 = st.columns([1, 1.2])
 
             with panel_res1:
-                # Banner con gradiente Aqua brillante y efecto cristalino "Glossy"
+                # Banner con diseño de burbuja brillante Aqua tipo Windows Vista
                 st.markdown(f"""
-                <div style='background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%); 
-                            padding: 30px; border-radius: 12px; text-align: center;
-                            border: 1px solid rgba(255,255,255,0.4);
-                            box-shadow: 0px 5px 20px rgba(0, 131, 176, 0.3);'>
-                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #e0f7fa !important; letter-spacing: 1px;'>BENEFICIO MÁXIMO</p>
-                    <h1 style='margin:15px 0; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; font-size: 50px !important; font-family: sans-serif; text-shadow: 0px 2px 4px rgba(0,0,0,0.2);'>{round(-res.fun, 2):,}</h1>
-                    <p style='margin:0; font-size: 13px; color: #b2ebf2 !important;'>Usuarios totales soportados</p>
+                <div style='background: linear-gradient(135deg, #a3e5ff 0%, #3ebbef 50%, #0599cb 100%); 
+                            padding: 30px; border: 1px solid rgba(255,255,255,0.7); border-radius: 14px; text-align: center;
+                            box-shadow: 0px 8px 20px rgba(5, 153, 203, 0.3), inset 0px 1px 6px rgba(255,255,255,0.8);'>
+                    <p style='margin:0; font-size: 14px; font-weight: bold; color: #0c3c60 !important; letter-spacing: 1px;'>BENEFICIO MÁXIMO</p>
+                    <h1 style='margin:15px 0; color: white !important; -webkit-text-fill-color: white !important; font-size: 50px !important; font-family: sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2);'>{round(-res.fun, 2):,}</h1>
+                    <p style='margin:0; font-size: 13px; color: #e6f7ff !important; font-weight: bold;'>Usuarios totales soportados</p>
                 </div>
                 """, unsafe_allow_html=True)
 
